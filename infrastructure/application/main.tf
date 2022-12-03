@@ -56,8 +56,3 @@ resource "aws_instance" "main" {
     command = "sed -i '/^[0-9]/d' aws_hosts"
   }
 }
-
-# TODO: Replace ip with elastic ip
-output "application_endpoint" {
-  value = {for i in aws_instance.main[*] : i.tags.Name => "${i.public_ip}:3000"}
-}
