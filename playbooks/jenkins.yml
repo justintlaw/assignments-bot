@@ -1,0 +1,76 @@
+---
+- name: Install Jenkins
+  hosts: main
+  remote_user: ubuntu
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Update Java Runtime
+      apt:
+        name: openjdk-17-jre
+        update_cache: yes
+    - name: Install Unzip
+      ansible.builtin.apt:
+        name: unzip
+        state: present
+    - name: Download AWS Cli Zip File
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscliv2.zip
+      register: aws_cli_download
+    - name: Unzip AWS Cli Zip File
+      ansible.builtin.unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: true
+      when: aws_cli_download.changed
+      register: aws_cli_installer
+    - name: Install AWS Cli
+      shell: /tmp/aws/install
+      args:
+        creates: /usr/bin/aws
+      when: aws_cli_installer.changed
+    - name: Add HashiCorp Key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+    - name: Add HashiCorp Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
+        state: present
+    - name: Install Terraform
+      ansible.builtin.apt:
+        name: terraform
+        state: present
+        update_cache: yes
+    - name: Download Jenkins Apt Key
+      ansible.builtin.apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+    - name: Add Jenkins Repo to Sources List
+      ansible.builtin.apt_repository:
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
+        state: present
+        filename: jenkins
+    - name: Update Apt Cache and Install Jenkins
+      apt:
+        name: jenkins
+        update_cache: yes
+    - name: Ensure Jenkins is Started and Enabled
+      ansible.builtin.systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+    - name: Create Jenkins User directory
+      ansible.builtin.file:
+        path: /home/jenkins/.ssh
+        owner: jenkins
+        mode: '0755'
+        state: directory
+    - name: Copy Public Key
+      ansible.builtin.copy:
+        src: /home/justin/.ssh/mtckey.pub
+        dest: /home/jenkins/.ssh/mtckey.pub
+        owner: jenkins
