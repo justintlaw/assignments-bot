@@ -15,7 +15,7 @@ pipeline {
     stage('Plan') {
       steps {
         dir('infrastructure/application') {
-          sh 'terraform plan -no-color -var-file="./prod.tfvars"'
+          sh 'terraform plan -no-color -var-file="$BRANCH_NAME.tfvars"'
         }
       }
     }

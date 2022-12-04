@@ -10,6 +10,10 @@ output "public_sg_id" {
   value = aws_security_group.main_sg.id
 }
 
+output "jenkins_sg_id" {
+  value = aws_security_group.jenkins_sg.id
+}
+
 output "ec2_instance_profile_id" {
   value = aws_iam_instance_profile.terraform_profile.id
 }

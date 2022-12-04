@@ -88,6 +88,12 @@ resource "aws_security_group" "main_sg" {
   vpc_id      = aws_vpc.main.id
 }
 
+resource "aws_security_group" "jenkins_sg" {
+  name = "jenkins_sg"
+  description = "Security group for jenkins"
+  vpc_id = aws_vpc.main.id
+}
+
 resource "aws_security_group_rule" "ingress_all" {
   type              = "ingress"
   from_port         = 0
@@ -104,4 +110,13 @@ resource "aws_security_group_rule" "egress_all" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.main_sg.id
+}
+
+resource "aws_security_group_rule" "ingress_jenkins" {
+  type = "ingress"
+  from_port = 8080
+  to_port = 8080
+  protocol = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.jenkins_sg.id
 }

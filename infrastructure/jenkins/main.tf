@@ -56,7 +56,10 @@ resource "aws_instance" "main" {
   ami                    = data.aws_ami.server_ami.id # key id or name
   key_name               = aws_key_pair.main_auth.id
   iam_instance_profile = data.terraform_remote_state.networking.outputs.ec2_instance_profile_id
-  vpc_security_group_ids = [data.terraform_remote_state.networking.outputs.public_sg_id]
+  vpc_security_group_ids = [
+    data.terraform_remote_state.networking.outputs.public_sg_id,
+    data.terraform_remote_state.networking.outputs.jenkins_sg_id
+  ]
   subnet_id              = data.terraform_remote_state.networking.outputs.main_public_subnet_ids[0]
 
   root_block_device {
