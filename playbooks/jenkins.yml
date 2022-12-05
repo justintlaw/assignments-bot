@@ -91,3 +91,7 @@
         name: jenkins
         append: true
         groups: ["docker"]
+    - name: Install JQ
+      ansible.builtin.apt:
+        name: jq
+        state: present

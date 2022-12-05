@@ -65,8 +65,8 @@ pipeline {
       steps {
         dir ('infrastructure/application') {
           script {
-            env.AWS_ACCOUNT_ID = sh(script: 'terraform output -json account_id', returnStdout: true).trim()
-            env.REPO_NAME = sh(script: 'terraform output -json application_image_repo_name', returnStdout: true).trim()
+            env.AWS_ACCOUNT_ID = sh(script: 'terraform output -json account_id | jq -r .', returnStdout: true).trim()
+            env.REPO_NAME = sh(script: 'terraform output -json application_image_repo_name | jr -r .', returnStdout: true).trim()
           }
         }
 
