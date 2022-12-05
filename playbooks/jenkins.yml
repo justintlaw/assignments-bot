@@ -75,14 +75,19 @@
     #     src: /home/justin/.ssh/mtckey.pub
     #     dest: /home/jenkins/.ssh/mtckey.pub
     #     owner: jenkins
-    - name: Install Docker
-      ansible.builtin.apt:
-        name: docker.io
-        state: present
-    - name: Install Pip
-      ansible.builtin.apt:
-        name: python3-pip
-        state: present
-    - name: Install Docker Python SDK
-      ansible.builtin.pip:
-        name: docker
+    # - name: Install Docker
+    #   ansible.builtin.apt:
+    #     name: docker.io
+    #     state: present
+    # - name: Install Pip
+    #   ansible.builtin.apt:
+    #     name: python3-pip
+    #     state: present
+    # - name: Install Docker Python SDK
+    #   ansible.builtin.pip:
+    #     name: docker
+    - name: Give Jenkins Docker Access
+      ansible.builtin.user:
+        name: jenkins
+        append: true
+        groups: ["docker"]
