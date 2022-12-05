@@ -32,6 +32,11 @@ pipeline {
         echo 'Apply Accepted'
       }
     }
+    stage ('Apply') {
+      dir('infrastructure/application') {
+        sh 'terraform apply -no-color -auto-approve -var-file="$BRANCH_NAME.tfvars"'
+      }
+    }
     stage ('Build Application') {
       // build application container and push to ecr
       steps {
@@ -68,19 +73,19 @@ pipeline {
     //   sh 'aws ec2 wait instance-status-ok --region us-west-2'
     // }
   }
-  post {
-    success {
-      echo 'Success'
-    }
-    failure {
-      dir('infrastructure/application') {
-        sh 'terraform destroy -auto-approve'
-      }
-    }
-    aborted {
-      dir('infrastructure/application') {
-        sh 'terraform destroy -auto-approve'
-      }
-    }
-  }
+  // post {
+  //   success {
+  //     echo 'Success'
+  //   }
+  //   failure {
+  //     dir('infrastructure/application') {
+  //       sh 'terraform destroy -auto-approve'
+  //     }
+  //   }
+  //   aborted {
+  //     dir('infrastructure/application') {
+  //       sh 'terraform destroy -auto-approve'
+  //     }
+  //   }
+  // }
 }
