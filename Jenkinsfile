@@ -75,9 +75,9 @@ pipeline {
             aws ecr get-login-password --region us-west-2 | \\
             docker login \\
             --username AWS \\
-            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com" \\
-            docker build -t "$REPO_NAME" . \\
-            docker tag "${REPO_NAME}:latest" "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest" \\
+            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com"
+            docker build -t "$REPO_NAME" .
+            docker tag "${REPO_NAME}:latest" "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"
             docker push "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"'''
         }
       }
