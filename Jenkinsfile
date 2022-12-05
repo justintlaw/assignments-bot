@@ -41,21 +41,30 @@ pipeline {
     }
     stage ('Build Application') {
       // build application container and push to ecr
+      // dir ('infrastructure/application') {
+      //   environment {
+      //     AWS_ACCOUNT_ID = sh(script: 'terraform output -json account_id', returnStdout: true).trim()
+      //     REPO_NAME = sh(script: 'terraform output -json application_image_repo_name', returnStdout: true).trim()
+      //   }
+      // }
+
       steps {
         dir ('infrastructure/application') {
           script {
-            env.AWS_ACCOUNT_ID = terraform output -json account_id
-            env.REPO_NAME = terraform output -json application_image_repo_name
+            env.AWS_ACCOUNT_ID = sh(script: 'terraform output -json account_id', returnStdout: true).trim()
+            env.REPO_NAME = sh(script: 'terraform output -json application_image_repo_name', returnStdout: true).trim()
           }
         }
+
         dir('src') {
-          sh '''aws ecr get-login-password --region us-west-2 | \\
+          sh '''
+            aws ecr get-login-password --region us-west-2 | \\
             docker login \\
             --username AWS \\
-            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com'''
-          sh 'docker build -t "$REPO_NAME" .'
-          sh 'docker tag "${REPO_NAME}:latest" "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"'
-          sh 'docker push "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"'
+            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com \\
+            docker build -t "$REPO_NAME" . \\
+            docker tag "${REPO_NAME}:latest" "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest" \\
+            docker push "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"'''
         }
       }
     }

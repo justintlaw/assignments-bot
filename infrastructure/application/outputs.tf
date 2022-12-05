@@ -1,5 +1,5 @@
 output "application_endpoint" {
-  value = {for i in aws_instance.main[*] : i.tags.Name => "${i.public_ip}:3000"}
+  value = { for i in aws_instance.main[*] : i.tags.Name => "${i.public_ip}:3000" }
 }
 
 output "application_image_repo_name" {

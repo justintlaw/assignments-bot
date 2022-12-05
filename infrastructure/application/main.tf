@@ -1,9 +1,9 @@
 data "terraform_remote_state" "networking" {
   backend = "s3"
   config = {
-    bucket                  = "terraform-state-ljustint"
-    key                     = "assignments-bot-networking"
-    region                  = "us-west-2"
+    bucket = "terraform-state-ljustint"
+    key    = "assignments-bot-networking"
+    region = "us-west-2"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_instance" "main" {
   instance_type          = var.main_instance_type
   ami                    = data.aws_ami.server_ami.id # key id or name
   key_name               = aws_key_pair.main_auth.id
-  iam_instance_profile = data.terraform_remote_state.networking.outputs.ec2_instance_profile_id
+  iam_instance_profile   = data.terraform_remote_state.networking.outputs.ec2_instance_profile_id
   vpc_security_group_ids = [data.terraform_remote_state.networking.outputs.public_sg_id]
   subnet_id              = data.terraform_remote_state.networking.outputs.main_public_subnet_ids[count.index]
 
