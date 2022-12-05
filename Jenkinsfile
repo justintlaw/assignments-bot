@@ -33,8 +33,10 @@ pipeline {
       }
     }
     stage ('Apply') {
-      dir('infrastructure/application') {
-        sh 'terraform apply -no-color -auto-approve -var-file="$BRANCH_NAME.tfvars"'
+      steps {
+        dir('infrastructure/application') {
+          sh 'terraform apply -no-color -auto-approve -var-file="$BRANCH_NAME.tfvars"'
+        }
       }
     }
     stage ('Build Application') {
