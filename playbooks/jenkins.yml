@@ -74,3 +74,6 @@
         src: /home/justin/.ssh/mtckey.pub
         dest: /home/jenkins/.ssh/mtckey.pub
         owner: jenkins
+    - name: Install Docker
+      ansible.builtin.pip:
+        name: docker

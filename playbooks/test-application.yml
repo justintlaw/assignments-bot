@@ -1,0 +1,16 @@
+---
+- name: Test Application Access
+  hosts: main
+  gather_facts: no
+  remote_user: ubuntu
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: Verify Application Running
+      ansible.builtin.uri:
+        # inventory hostname is default to ansible
+        url: http://{{ inventory_hostname }}:3000
+        # follow_redirects: none
+        status_code: [200, 201]

@@ -18,6 +18,8 @@ data "aws_ami" "server_ami" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 resource "random_id" "main_node_id" {
   byte_length = 2
   count       = var.main_instance_count
@@ -54,5 +56,14 @@ resource "aws_instance" "main" {
   provisioner "local-exec" {
     when    = destroy
     command = "sed -i '/^[0-9]/d' aws_hosts"
+  }
+}
+
+# Repository for application docker images
+resource "aws_ecr_repository" "application_image_repo" {
+  name = "application_image_repo"
+
+  image_scanning_configuration {
+    scan_on_push = true
   }
 }

@@ -21,6 +21,11 @@ app.use((req, res, next) => {
 
 app.use('/api', routes)
 
+// health check endpoint
+app.get('/', (req, res) => {
+  res.send('ok')
+})
+
 // Basic handling for when an error is thrown
 app.use((err, req, res, next) => {
   res.status(err.statusCode).json({ message: err.message })

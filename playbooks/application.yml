@@ -1,0 +1,21 @@
+---
+- name: Setup Application Server
+  hosts: main
+  remote_user: ubuntu
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name:  Install Python Docker
+      ansible.builtin.pip:
+        name: docker
+    - name: Start MongoDB Container
+      community.docker_container:
+        name: mongodb
+        state: started
+        image: mongo
+        pull: true
+        ports:
+          - 27017-27017
+    - name: 
