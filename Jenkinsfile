@@ -5,6 +5,10 @@ pipeline {
   }
   stages {
     stage('Init') {
+      when {
+        branch "main"
+      }
+
       steps {
         dir('infrastructure/application') {
           sh 'ls'
@@ -13,6 +17,9 @@ pipeline {
       }
     }
     stage('Plan') {
+      when {
+        branch "main"
+      }
       steps {
         dir('infrastructure/application') {
           sh 'terraform plan -no-color -var-file="$BRANCH_NAME.tfvars"'
@@ -20,6 +27,9 @@ pipeline {
       }
     }
     stage ('Validate Apply') {
+      when {
+        branch "main"
+      }
       // when {
       //   beforeInput true
       //   branch "dev"
@@ -33,6 +43,10 @@ pipeline {
       }
     }
     stage ('Apply') {
+      when {
+        branch "main"
+      }
+
       steps {
         dir('infrastructure/application') {
           sh 'terraform apply -no-color -auto-approve -var-file="$BRANCH_NAME.tfvars"'
@@ -61,7 +75,7 @@ pipeline {
             aws ecr get-login-password --region us-west-2 | \\
             docker login \\
             --username AWS \\
-            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com \\
+            --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com" \\
             docker build -t "$REPO_NAME" . \\
             docker tag "${REPO_NAME}:latest" "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest" \\
             docker push "${AWS_ACCOUNT_ID}.dkr.ecr.us-west-2.amazonaws.com/${REPO_NAME}:latest"'''
