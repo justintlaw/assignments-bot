@@ -2,6 +2,7 @@ pipeline {
   agent any
   environment {
     TF_IN_AUTOMATION = 'true'
+    ANSIBLE_HOST_KEY_CHECKING = 'False'
   }
   stages {
     stage('Init') {
