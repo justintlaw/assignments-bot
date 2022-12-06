@@ -15,6 +15,7 @@ pipeline {
     stage('Plan') {
       steps {
         dir('infrastructure/application') {
+          sh 'export TF_LOG=1'
           sh 'terraform plan -no-color -var-file="$BRANCH_NAME.tfvars"'
         }
       }
