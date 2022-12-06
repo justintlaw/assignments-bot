@@ -13,3 +13,7 @@ output "account_id" {
 output "instance_ips" {
   value = [for i in aws_instance.main[*]: i.public_ip]
 }
+
+output "instance_public_dns_list" {
+  value = [for i in aws_instance.main[*]: i.public_dns]
+}
