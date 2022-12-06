@@ -13,6 +13,6 @@ resource "aws_security_group_rule" "ingress_ssh_jenkins" {
   from_port = 22
   to_port = 22
   protocol = "tcp"
-  source_security_group_id = data.terraform_remote_state.networking.outputs.jenkins_sg_id
+  source_security_group_id = data.terraform_remote_state.networking.outputs.public_sg_id
   security_group_id = aws_security_group.application_sg.id
 }
