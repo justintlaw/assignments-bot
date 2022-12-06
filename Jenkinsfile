@@ -65,7 +65,7 @@ pipeline {
         dir('infrastructure/application') {
           sh 'echo [main] > aws_hosts'
           sh '''printf \\
-            "\\n$(terraform output -json instance_ips | jq -r \'.[]\')" \\
+            "\\n$(terraform output -json instance_public_dns_list | jq -r \'.[]\')" \\
             >> aws_hosts'''
         }
 
