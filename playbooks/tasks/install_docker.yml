@@ -1,0 +1,17 @@
+---
+- name: Install Docker
+  ansible.builtin.apt:
+    name: docker.io
+    state: present
+- name: Install Pip
+  ansible.builtin.apt:
+    name: python3-pip
+    state: present
+- name:  Install Python Docker SDK
+  ansible.builtin.pip:
+    name: docker
+- name: Give User Docker Access
+  ansible.builtin.user:
+    name: "{{ docker_user }}"
+    append: true
+    groups: ["docker"]

@@ -5,17 +5,138 @@
   become: yes
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    aws_account_id: "256343118501"
+    docker_user: ubuntu
+    network_id: "default_network"
 
   tasks:
-    - name:  Install Python Docker
-      ansible.builtin.pip:
-        name: docker
+    - name: Install AWS CLI
+      ansible.builtin.include_tasks:
+        file: tasks/install_aws_cli.yml
+    - name: Install Docker
+      ansible.builtin.include_tasks:
+        file: tasks/install_docker.yml
+    - name: Retrieve ECR Password
+      shell: "aws ecr get-login-password --region us-west-2"
+      register: ecr_login_command
+    - name: Login To Docker
+      docker_login:
+        registry_url: 256343118501.dkr.ecr.us-west-2.amazonaws.com
+        username: AWS
+        password: "{{ecr_login_command.stdout}}"
+        state: present
+    - name: Create Docker Network
+      docker_network:
+        name: "{{ network_id }}"
+        driver: bridge
+        state: present
+        ipam_config:
+          - subnet: "172.28.0.0/16"
+            iprange: "172.28.5.0/24"
+            gateway: "172.28.5.254"
     - name: Start MongoDB Container
-      community.docker_container:
+      docker_container:
         name: mongodb
+        networks_cli_compatible: yes
+        networks: 
+          - name: "{{ network_id }}"
         state: started
         image: mongo
         pull: true
         ports:
-          - 27017-27017
-    - name: 
+          - 27017:27017
+    - name: Start Application Container
+      docker_container:
+        name: application
+        networks_cli_compatible: yes
+        networks: 
+          - name: "{{ network_id }}"
+        state: started
+        image: 256343118501.dkr.ecr.us-west-2.amazonaws.com/application_image_repo:latest
+        pull: true
+        ports:
+          - 3000:3000
+
+  # tasks:
+  #   - name: Update Java Runtime
+  #     apt:
+  #       name: openjdk-17-jre
+  #       update_cache: yes
+  #   - name: Install Unzip
+  #     ansible.builtin.apt:
+  #       name: unzip
+  #       state: present
+  #   - name: Download AWS Cli Zip File
+  #     ansible.builtin.get_url:
+  #       url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+  #       dest: /tmp/awscliv2.zip
+  #       force: false
+  #     register: aws_cli_download
+  #   - name: Unzip AWS Cli Zip File
+  #     ansible.builtin.unarchive:
+  #       src: /tmp/awscliv2.zip
+  #       dest: /tmp
+  #       remote_src: true
+  #     when: aws_cli_download.changed
+  #     register: aws_cli_installer
+  #   - name: Install AWS Cli
+  #     shell: /tmp/aws/install --update
+  #     args:
+  #       creates: /usr/bin/aws
+  #     when: aws_cli_installer.changed
+  #   - name: Install Docker
+  #     ansible.builtin.apt:
+  #       name: docker.io
+  #       state: present
+  #   - name: Install Pip
+  #     ansible.builtin.apt:
+  #       name: python3-pip
+  #       state: present
+  #   - name:  Install Python Docker
+  #     ansible.builtin.pip:
+  #       name: docker
+  #   - name: Give Jenkins Docker Access
+  #     ansible.builtin.user:
+  #       name: jenkins
+  #       append: true
+  #       groups: ["docker"]
+  #   - name: Retrieve ECR Password
+  #     shell: "aws ecr get-login-password --region us-west-2"
+  #     register: ecr_login_command
+  #   - name: Login To Docker
+  #     docker_login:
+  #       registry_url: 256343118501.dkr.ecr.us-west-2.amazonaws.com
+  #       username: AWS
+  #       password: "{{ecr_login_command.stdout}}"
+  #       state: present
+  #   - name: Create Docker Network
+  #     docker_network:
+  #       name: "{{ network_id }}"
+  #       driver: bridge
+  #       state: present
+  #       ipam_config:
+  #         - subnet: "172.28.0.0/16"
+  #           iprange: "172.28.5.0/24"
+  #           gateway: "172.28.5.254"
+  #   - name: Start MongoDB Container
+  #     docker_container:
+  #       name: mongodb
+  #       networks_cli_compatible: yes
+  #       networks: 
+  #         - name: "{{ network_id }}"
+  #       state: started
+  #       image: mongo
+  #       pull: true
+  #       ports:
+  #         - 27017:27017
+  #   - name: Start Application Container
+  #     docker_container:
+  #       name: application
+  #       networks_cli_compatible: yes
+  #       networks: 
+  #         - name: "{{ network_id }}"
+  #       state: started
+  #       image: 256343118501.dkr.ecr.us-west-2.amazonaws.com/application_image_repo:latest
+  #       pull: true
+  #       ports:
+  #         - 3000:3000

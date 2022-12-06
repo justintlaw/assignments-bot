@@ -1,0 +1,26 @@
+---
+- name: Update Java Runtime
+  apt:
+    name: openjdk-17-jre
+    update_cache: yes
+- name: Install Unzip
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+- name: Download AWS Cli Zip File
+  ansible.builtin.get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: /tmp/awscliv2.zip
+    force: false
+  register: aws_cli_download
+- name: Unzip AWS Cli Zip File
+  ansible.builtin.unarchive:
+    src: /tmp/awscliv2.zip
+    dest: /tmp
+    remote_src: true
+  when: aws_cli_download.changed
+  register: aws_cli_installer
+- name: Install AWS Cli
+  shell: /tmp/aws/install --update
+  args:
+    creates: /usr/bin/aws

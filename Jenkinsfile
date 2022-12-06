@@ -5,10 +5,6 @@ pipeline {
   }
   stages {
     stage('Init') {
-      when {
-        branch "main"
-      }
-
       steps {
         dir('infrastructure/application') {
           sh 'ls'
@@ -17,9 +13,6 @@ pipeline {
       }
     }
     stage('Plan') {
-      when {
-        branch "main"
-      }
       steps {
         dir('infrastructure/application') {
           sh 'terraform plan -no-color -var-file="$BRANCH_NAME.tfvars"'
@@ -40,25 +33,13 @@ pipeline {
       }
     }
     stage ('Apply') {
-      when {
-        branch "main"
-      }
-
       steps {
         dir('infrastructure/application') {
           sh 'terraform apply -no-color -auto-approve -var-file="$BRANCH_NAME.tfvars"'
         }
       }
     }
-    stage ('Build Application') {
-      // build application container and push to ecr
-      // dir ('infrastructure/application') {
-      //   environment {
-      //     AWS_ACCOUNT_ID = sh(script: 'terraform output -json account_id', returnStdout: true).trim()
-      //     REPO_NAME = sh(script: 'terraform output -json application_image_repo_name', returnStdout: true).trim()
-      //   }
-      // }
-
+    stage ('Build Application Container') {
       steps {
         dir ('infrastructure/application') {
           script {
@@ -79,11 +60,22 @@ pipeline {
         }
       }
     }
-    // stage('Ansible') {
-    //   steps {
-    //     ansiblePlaybook(credentialsId: 'ec2-ssh-key', inventory: 'aws_hosts', playbook: 'playbooks/main-playbook.yml')
-    //   }
-    // }
+    stage('Set Ansible Inventory') {
+      steps {
+        dir('infrastructure/application') {
+          sh '''printf \\
+            "\\n$(terraform output -json instance_ips | jq -r \'.[]\')" \\
+            >> aws_hosts'''
+        }
+
+        sh 'cp infrastructure/application/aws_hosts application_hosts'
+      }
+    }
+    stage('Update Application Server') {
+      steps {
+        ansiblePlaybook(credentialsId: 'application-ssh-key', inventory: 'application_hosts', playbook: 'playbooks/application.yml')
+      }
+    }
     // stage('Apply') {
     //   steps {
     //     dir('infrastructure/application') {
