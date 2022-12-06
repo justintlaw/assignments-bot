@@ -11,10 +11,10 @@
 
   tasks:
     - name: Install AWS CLI
-      ansible.builtin.include_tasks:
+      include_tasks:
         file: tasks/install_aws_cli.yml
     - name: Install Docker
-      ansible.builtin.include_tasks:
+      include_tasks:
         file: tasks/install_docker.yml
     - name: Retrieve ECR Password
       shell: "aws ecr get-login-password --region us-west-2"
