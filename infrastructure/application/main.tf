@@ -1,25 +1,3 @@
-data "terraform_remote_state" "networking" {
-  backend = "s3"
-  config = {
-    bucket = "terraform-state-ljustint"
-    key    = "assignments-bot-networking"
-    region = "us-west-2"
-  }
-}
-
-data "aws_ami" "server_ami" {
-  most_recent = true
-
-  owners = ["099720109477"]
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
-  }
-}
-
-data "aws_caller_identity" "current" {}
-
 resource "random_id" "main_node_id" {
   byte_length = 2
   count       = var.main_instance_count
@@ -36,7 +14,10 @@ resource "aws_instance" "main" {
   ami                    = data.aws_ami.server_ami.id # key id or name
   key_name               = aws_key_pair.main_auth.id
   iam_instance_profile   = data.terraform_remote_state.networking.outputs.ec2_instance_profile_id
-  vpc_security_group_ids = [data.terraform_remote_state.networking.outputs.public_sg_id]
+  vpc_security_group_ids = [
+    data.terraform_remote_state.networking.outputs.public_sg_id,
+    aws_security_group.application_sg.id
+  ]
   subnet_id              = data.terraform_remote_state.networking.outputs.main_public_subnet_ids[count.index]
 
   root_block_device {

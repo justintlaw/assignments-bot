@@ -34,6 +34,7 @@ resource "aws_eip" "jenkins_eip" {
 
   instance = aws_instance.main.id
   vpc = true
+  network_border_group = "us-west-2"
 
   tags = {
     Name = "Jenkins Public IP"
@@ -84,7 +85,6 @@ resource "null_resource" "jenkins_install" {
   }
 }
 
-# TODO: Replace ip with elastic ip
-output "jenkins_access" {
-  value = "${aws_eip.jenkins_eip.public_ip}:8080"
+output "jenkins_ip" {
+  value = aws_eip.jenkins_eip.public_ip
 }
