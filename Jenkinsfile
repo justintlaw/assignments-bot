@@ -7,7 +7,6 @@ pipeline {
     stage('Init') {
       steps {
         dir('infrastructure/application') {
-          sh 'ls'
           sh 'terraform init -no-color'
         }
       }
@@ -64,6 +63,7 @@ pipeline {
     stage('Set Ansible Inventory') {
       steps {
         dir('infrastructure/application') {
+          sh 'echo [main] > aws_hosts'
           sh '''printf \\
             "\\n$(terraform output -json instance_ips | jq -r \'.[]\')" \\
             >> aws_hosts'''

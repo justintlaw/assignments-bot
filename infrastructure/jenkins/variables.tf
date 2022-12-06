@@ -1,6 +1,6 @@
 variable "main_instance_type" {
   type    = string
-  default = "t2.micro"
+  default = "t3.small" # ALERT: Not the free tier
 }
 
 variable "main_vol_size" {
