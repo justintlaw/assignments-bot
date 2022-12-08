@@ -119,12 +119,12 @@ pipeline {
     }
     failure {
       dir('infrastructure/application') {
-        sh 'terraform destroy -auto-approve'
+        sh 'terraform destroy -auto-approve -no-color -var-file="$BRANCH_NAME.tfvars"'
       }
     }
     aborted {
       dir('infrastructure/application') {
-        sh 'terraform destroy -auto-approve'
+        sh 'terraform destroy -auto-approve -no-color -var-file="$BRANCH_NAME.tfvars"'
       }
     }
   }

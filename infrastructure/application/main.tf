@@ -52,7 +52,7 @@ resource "aws_ecr_repository" "application_image_repo" {
 
 # Repository for application bot images
 resource "aws_ecr_repository" "bot_image_repo" {
-  name = "application_image_repo"
+  name = "bot_image_repo"
   force_delete = true
 
   image_scanning_configuration {

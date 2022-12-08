@@ -6,7 +6,7 @@ output "application_image_repo_name" {
   value = aws_ecr_repository.application_image_repo.name
 }
 
-output "botimage_repo_name" {
+output "bot_image_repo_name" {
   value = aws_ecr_repository.bot_image_repo.name
 }
 
