@@ -16,3 +16,6 @@ crash.log
 
 # Ansible
 *.retry
+
+# Environment files
+*.env

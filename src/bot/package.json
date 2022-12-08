@@ -1,0 +1,20 @@
+{
+  "name": "assignments-bot",
+  "version": "1.0.0",
+  "description": "A discord bot that allows users to fetch assignments",
+  "main": "client.js",
+  "scripts": {
+    "start": "nodemon --inspect client.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Justin Lawrence",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.2.1",
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

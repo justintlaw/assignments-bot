@@ -1,0 +1,10 @@
+---
+- name: Test Application Access
+  hosts: main
+  remote_user: ubuntu
+  gather_facts: no
+  tasks:
+    - name: Application
+      ansible.builtin.uri:
+        url: http://{{ inventory_hostname }}:3000
+        status_code: [200]

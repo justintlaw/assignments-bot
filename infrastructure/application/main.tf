@@ -40,8 +40,18 @@ resource "aws_instance" "main" {
   }
 }
 
-# Repository for application docker images
+# Repository for application application images
 resource "aws_ecr_repository" "application_image_repo" {
+  name = "application_image_repo"
+  force_delete = true
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# Repository for application bot images
+resource "aws_ecr_repository" "bot_image_repo" {
   name = "application_image_repo"
   force_delete = true
 

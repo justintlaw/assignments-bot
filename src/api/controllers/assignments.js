@@ -1,29 +1,29 @@
 'use strict'
 
-const db = require('../../db')
+const db = require('../db')
 const errors = require('../errors')
 
 const getAllAssignments = async (req, res, next) => {
-  const { days } = req.query
+  const { upcoming  } = req.query
 
   let assignments
 
   try {
-    if (!days) {
+    if (!upcoming) {
       assignments = await db.Assignment.find()
     } else {
-      if (isNaN(days)) {
-        throw new Error('Days parameter must be a number.')
+      if (isNaN(upcoming)) {
+        throw new Error('Upcoming parameter must be a number.')
       }
   
       assignments = await db.Assignment.find({
         dueDate: { 
           $gte: new Date(),
-          $lte: new Date().setDate(new Date().getDate() + Number(days))
+          $lte: new Date().setDate(new Date().getDate() + Number(upcoming))
         }
-      })
+      }).sort({ dueDate: 1 }) // ascending order
     }
-  
+
     req.responseData = assignments
   } catch (err) {
     throw new errors.InternalServerError('Failed to find assignments')

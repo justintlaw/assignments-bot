@@ -6,4 +6,4 @@ ENV PORT=3000
 WORKDIR /app
 COPY . .
 RUN npm install --production
-CMD [ "node", "api/server.js" ]
+CMD [ "node", "server.js" ]

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Application Tests GET /api/assignments/:id should get an assignment 1`] = `
+{
+  "__v": 0,
+  "dueDate": "2022-12-06T20:52:16.059Z",
+  "points": 10,
+  "title": "Homework 4",
+}
+`;
+
+exports[`Application Tests POST /api/assignments should create an assignment 1`] = `
+{
+  "__v": 0,
+  "dueDate": "2022-12-06T20:52:16.059Z",
+  "points": 10,
+  "title": "Homework 1",
+}
+`;
+
+exports[`Application Tests POST /api/assignments/:id should update an assignment 1`] = `
+{
+  "__v": 0,
+  "dueDate": "2022-12-09T20:52:16.059Z",
+  "points": 10,
+  "title": "Homework 3",
+}
+`;
