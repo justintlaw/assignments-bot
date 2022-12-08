@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  triggers {
+    githubPush()
+  }
   environment {
     TF_IN_AUTOMATION = 'true'
     ANSIBLE_HOST_KEY_CHECKING = 'False'
