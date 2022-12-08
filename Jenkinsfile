@@ -109,9 +109,6 @@ pipeline {
         ansiblePlaybook(credentialsId: 'application-ssh-key', inventory: 'application_hosts', playbook: 'playbooks/application.yml')
       }
     }
-    // stage('Ec2 Wait') {
-    //   sh 'aws ec2 wait instance-status-ok --region us-west-2'
-    // }
   }
   post {
     success {

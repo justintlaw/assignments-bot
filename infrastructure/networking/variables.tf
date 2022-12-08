@@ -3,9 +3,10 @@ variable "vpc_cidr" {
   default = "10.123.0.0/16"
 }
 
+// specify personal ip when calling script
+// ie. TF_VAR_access_ip=192.0.0.1 terraform apply ...
 variable "access_ip" {
   type    = string
-  default = "66.219.195.170/32"
 }
 
 variable "main_instance_type" {
