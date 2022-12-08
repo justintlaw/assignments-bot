@@ -8,12 +8,21 @@
     docker_user: jenkins
 
   tasks:
-    # - name: Install AWS CLI
-    #   include_tasks:
-    #     file: tasks/install_aws_cli.yml
-    # - name: Install Docker
-    #   include_tasks:
-    #     file: tasks/install_docker.yml
+    - name: Install AWS CLI
+      include_tasks:
+        file: tasks/install_aws_cli.yml
+    - name: Install virtualenv
+      ansible.bulitin.apt:
+        name: python3-venv
+        update_cache: yes
+    - name: Install Required Python Packages
+      ansible.builtin.pip:
+        name:
+          - botocore
+          - boto3
+    - name: Install Docker
+      include_tasks:
+        file: tasks/install_docker.yml
     - name: Install Node Key
       apt_key:
         url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
@@ -27,53 +36,53 @@
       ansible.builtin.apt:
         name: nodejs
         state: present
-    # - name: Add HashiCorp Key
-    #   ansible.builtin.apt_key:
-    #     url: https://apt.releases.hashicorp.com/gpg
-    #     state: present
-    # - name: Add HashiCorp Repository
-    #   ansible.builtin.apt_repository:
-    #     repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
-    #     state: present
-    # - name: Install Terraform
-    #   ansible.builtin.apt:
-    #     name: terraform
-    #     state: present
-    #     update_cache: yes
-    # - name: Download Jenkins Apt Key
-    #   ansible.builtin.apt_key:
-    #     url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
-    #     state: present
-    # - name: Add Jenkins Repo To Sources List
-    #   ansible.builtin.apt_repository:
-    #     repo: deb https://pkg.jenkins.io/debian-stable binary/
-    #     state: present
-    #     filename: jenkins
-    # - name: Install Jenkins
-    #   apt:
-    #     name: jenkins
-    #     update_cache: yes
-    # - name: Ensure Jenkins is Started and Enabled
-    #   ansible.builtin.systemd:
-    #     name: jenkins
-    #     enabled: yes
-    #     state: started
-    # - name: Create Jenkins User directory
-    #   ansible.builtin.file:
-    #     path: /home/jenkins/.ssh
-    #     owner: jenkins
-    #     mode: '0755'
-    #     state: directory
-    # - name: Copy Public Key
-    #   ansible.builtin.copy:
-    #     src: /home/justin/.ssh/mtckey.pub
-    #     dest: /home/jenkins/.ssh/mtckey.pub
-    #     owner: jenkins
-    # - name: Install JQ
-    #   ansible.builtin.apt:
-    #     name: jq
-    #     state: present
-    # - name: Install Ansible
-    #   ansible.builtin.apt:
-    #     name: ansible
-    #     state: present
+    - name: Add HashiCorp Key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+    - name: Add HashiCorp Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
+        state: present
+    - name: Install Terraform
+      ansible.builtin.apt:
+        name: terraform
+        state: present
+        update_cache: yes
+    - name: Download Jenkins Apt Key
+      ansible.builtin.apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+    - name: Add Jenkins Repo To Sources List
+      ansible.builtin.apt_repository:
+        repo: deb https://pkg.jenkins.io/debian-stable binary/
+        state: present
+        filename: jenkins
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+        update_cache: yes
+    - name: Ensure Jenkins is Started and Enabled
+      ansible.builtin.systemd:
+        name: jenkins
+        enabled: yes
+        state: started
+    - name: Create Jenkins User directory
+      ansible.builtin.file:
+        path: /home/jenkins/.ssh
+        owner: jenkins
+        mode: '0755'
+        state: directory
+    - name: Copy Public Key
+      ansible.builtin.copy:
+        src: /home/justin/.ssh/mtckey.pub
+        dest: /home/jenkins/.ssh/mtckey.pub
+        owner: jenkins
+    - name: Install JQ
+      ansible.builtin.apt:
+        name: jq
+        state: present
+    - name: Install Ansible
+      ansible.builtin.apt:
+        name: ansible
+        state: present
