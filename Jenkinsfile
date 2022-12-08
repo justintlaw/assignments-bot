@@ -8,6 +8,7 @@ pipeline {
     stage('Test') {
       steps {
         dir('src/api') {
+          sh 'npm ci'
           sh 'npm run db:start'
           sh 'npm run test'
           sh 'npm run db:stop'
