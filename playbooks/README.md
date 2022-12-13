@@ -1,0 +1,1 @@
+nginx.conf should have keepalive_timout = 75s;

@@ -58,6 +58,7 @@ resource "aws_instance" "main" {
   key_name               = aws_key_pair.main_auth.id
   iam_instance_profile = data.terraform_remote_state.networking.outputs.ec2_instance_profile_id
   vpc_security_group_ids = [
+    aws_security_group.jenkins_web_sg.id,
     data.terraform_remote_state.networking.outputs.public_sg_id,
     data.terraform_remote_state.networking.outputs.jenkins_sg_id
   ]
@@ -75,6 +76,11 @@ resource "aws_instance" "main" {
   provisioner "local-exec" {
     command = "aws ec2 wait instance-status-ok --instance-ids ${self.id} --region us-west-2"
   }
+
+  # Uncomment the below code if you don't want the server to redeploy when the ubuntu ami is updated
+  lifecycle {
+    ignore_changes = [ami]
+  }
 }
 
 resource "null_resource" "jenkins_install" {
@@ -83,8 +89,4 @@ resource "null_resource" "jenkins_install" {
   provisioner "local-exec" {
     command = "ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i aws_hosts --key-file /home/justin/.ssh/mtckey ../../playbooks/jenkins.yml"
   }
-}
-
-output "jenkins_ip" {
-  value = aws_eip.jenkins_eip.public_ip
 }

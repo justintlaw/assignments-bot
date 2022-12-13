@@ -15,6 +15,9 @@
     bot_port: 3001
 
   tasks:
+    - name: Install Python
+      include_tasks:
+        file: tasks/install_python.yml
     - name: Install AWS CLI
       include_tasks:
         file: tasks/install_aws_cli.yml

@@ -10,7 +10,7 @@ const getAllAssignments = async (req, res, next) => {
 
   try {
     if (!upcoming) {
-      assignments = await db.Assignment.find()
+      assignments = await db.Assignment.find().sort({ dueDate: 1}) // ascending order
     } else {
       if (isNaN(upcoming)) {
         throw new Error('Upcoming parameter must be a number.')

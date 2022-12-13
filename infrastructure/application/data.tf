@@ -27,4 +27,6 @@ data "aws_ami" "server_ami" {
   }
 }
 
+# Retrieve the AWS identity of the process that started the script
+# Useful for grabbing information such as account id, etc.
 data "aws_caller_identity" "current" {}

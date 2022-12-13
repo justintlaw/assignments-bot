@@ -8,13 +8,20 @@
     docker_user: jenkins
 
   tasks:
+    - name: Install Python
+      include_tasks:
+        file: tasks/install_python.yml
+    - name: Add HashiCorp Key
+      ansible.builtin.apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+    - name: Add HashiCorp Repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
+        state: present
     - name: Install AWS CLI
       include_tasks:
         file: tasks/install_aws_cli.yml
-    - name: Install virtualenv
-      ansible.bulitin.apt:
-        name: python3-venv
-        update_cache: yes
     - name: Install Required Python Packages
       ansible.builtin.pip:
         name:
@@ -35,14 +42,6 @@
     - name: Install Node
       ansible.builtin.apt:
         name: nodejs
-        state: present
-    - name: Add HashiCorp Key
-      ansible.builtin.apt_key:
-        url: https://apt.releases.hashicorp.com/gpg
-        state: present
-    - name: Add HashiCorp Repository
-      ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
         state: present
     - name: Install Terraform
       ansible.builtin.apt:
